@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yandex_parser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+    <link rel="icon" href="/static/favicon.ico">
+    <style>
+      /* Подключаем шрифт Optima */
+      @font-face {
+        font-family: "Optima";
+        src: local("Optima"), local("Optima Regular");
+      }
+      .optima-font {
+        font-family: "Optima", sans-serif;
+      }
+      .form-signin {
+        background: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон для основного контейнера */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Тень */
+      }
+      .form-floating {
+        background: transparent; /* Полностью прозрачный фон для контейнера input */
+        border: none; /* Убирает рамку */
+      }
+      .form-floating input {
+        background: transparent; /* Полностью прозрачный фон для input */
+      }
+      body {
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c, #ff6c66, #ff5f3e, #ff5128);
+        background-size: 300% 300%;
+        animation: gradientBackground 10s ease infinite;
+      }
+      @keyframes gradientBackground {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* Стиль для модального окна загрузки */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+        display: none; /* По умолчанию скрыто */
+      }
+      .loader {
+        border: 8px solid rgba(255, 255, 255, 0.3);
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .quote {
+        margin-top: 20px;
+        font-size: 1.2em;
+        color: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        max-width: 60%;
+      }
+    </style>
+  </head>
+  <body class="text-center">
+    <!-- Основная форма -->
+    <main class="form-signin w-100 m-auto">
+      <form id="parserForm">
+        <h1 class="h3 mb-3 fw-normal optima-font">Yandex_parser</h1>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="query" name="query" placeholder="Запрос">
+          <label for="query">Введите запрос и город </label>
+        </div>
+        <button class="btn btn-lg btn-primary mt-3" type="submit">Запустить парсер</button>
+        <p class="mt-5 mb-3 text-muted">© 2024</p>
+      </form>
+    </main>
+
+    <!-- Модальное окно загрузки -->
+    <div class="loading-container" id="loadingModal">
+      <div class="loader"></div>
+      <p class="quote" id="quote">Загрузка...</p>
+    </div>
+
+    <script>
+      // Массив цитат
+      const quotes = [
+        "«Секрет продвижения в том, чтобы начать.» — Марк Твен",
+        "«Ничто великое не было достигнуто без энтузиазма.» — Ральф Уолдо Эмерсон",
+        "«Неудача — это просто возможность начать снова, но более мудро.» — Генри Форд",
+        "«Всё, что вы можете себе представить, реально.» — Пабло Пикассо",
+        "«Каждое утро мы рождаемся заново. Важно только то, что мы делаем сегодня.» — Будда"
+      ];
+
+      // Функция для отображения случайной цитаты
+      function displayRandomQuote() {
+        const quoteElement = document.getElementById('quote');
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        quoteElement.textContent = quotes[randomIndex];
+      }
+
+      // Периодическое обновление цитат
+      setInterval(displayRandomQuote, 5000);
+      displayRandomQuote();
+
+      // Обработка формы
+      const parserForm = document.getElementById('parserForm');
+      const loadingModal = document.getElementById('loadingModal');
+
+      parserForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Предотвращение отправки формы
+
+        // Отображение модального окна
+        loadingModal.style.display = 'flex';
+
+        // Сбор данных формы
+        const formData = new FormData(parserForm);
+
+        try {
+          // Отправка данных на сервер
+          const response = await fetch('/run_parser', {
+            method: 'POST',
+            body: formData,
+          });
+
+          // Обработка ответа сервера
+          const result = await response.text();
+
+          if (response.ok) {
+            alert(result); // Сообщение об успешном завершении
+          } else {
+            alert(`Ошибка: ${result}`);
+          }
+        } catch (error) {
+          alert(`Ошибка сети: ${error}`);
+        } finally {
+          // Скрытие модального окна
+          loadingModal.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>

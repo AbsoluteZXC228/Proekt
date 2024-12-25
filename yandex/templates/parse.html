@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yandex_parser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+    <link rel="icon" href="/static/favicon.ico">
+    <style>
+      /* Подключаем шрифт Optima */
+      @font-face {
+        font-family: "Optima";
+        src: local("Optima"), local("Optima Regular");
+      }
+      .optima-font {
+        font-family: "Optima", sans-serif;
+      }
+      .form-signin {
+        background: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон для основного контейнера */
+      }
+      .form-floating {
+        background: transparent; /* Полностью прозрачный фон для контейнера input */
+        border: none; /* Убирает рамку */
+      }
+      .form-floating input {
+        background: transparent; /* Полностью прозрачный фон для input */
+      }
+    </style>
+  </head>
+  <body class="text-center">
+    <main class="form-signin w-100 m-auto">
+      <form action="/run_parser" method="POST">
+        <h1 class="h3 mb-3 fw-normal optima-font">Yandex_parser</h1>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="query" name="query" placeholder="Запрос">
+          <label for="query">Введите запрос и город </label>
+        </div>
+        <button class="btn btn-lg btn-primary mt-3" type="submit">Запустить парсер</button>
+        <p class="mt-5 mb-3 text-muted">© 2024</p>
+      </form>
+    </main>
+  </body>
+</html>
